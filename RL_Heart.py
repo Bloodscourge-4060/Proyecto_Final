@@ -27,17 +27,18 @@ def sigmoid(z):
 
 # Función para entrenar el modelo de regresión logística
 def train_logistic_regression(X, y, learning_rate=0.01, epochs=1000):
-    weights = np.zeros(X.shape[1])  # Inicializar pesos
+    weights = np.zeros(X.shape[1])
+    errors = []  
     for _ in range(epochs):
         z = np.dot(X, weights)
         predictions = sigmoid(z)
         error = y - predictions
         gradient = np.dot(X.T, error)
         weights += learning_rate * gradient
-    return weights
+        errors.append(np.mean(np.abs(error)))
+    return weights, errors
 
-# Entrenar el modelo
-weights = train_logistic_regression(X_train, y_train)
+weights, errors = train_logistic_regression(X_train, y_train)
 
 # Función para predecir usando los pesos aprendidos
 def predict(X, weights):
@@ -74,21 +75,28 @@ def f1_score(y_true, y_pred):
 def mean_squared_error(y_true, y_pred):
     return np.mean((y_true - y_pred) ** 2)
 
-# Calcular métricas de evaluación
-# acc = accuracy(y_test, y_pred)
-# rec = recall(y_test, y_pred)
-# prec = precision(y_test, y_pred)
-# f1 = f1_score(y_test, y_pred)
+#Calcular métricas de evaluación
+acc = accuracy(y_test, y_pred)
+rec = recall(y_test, y_pred)
+prec = precision(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
 cm = confusion_matrix(y_test, y_pred)
 mse = mean_squared_error(y_test, y_pred)
 
-# print("Accuracy:", acc)
-# print("Recall:", rec)
-# print("Precision:", prec)
-# print("F1 Score:", f1)
-# print("Confusion Matrix:")
-# print(cm)
+print("Accuracy:", acc)
+print("Recall:", rec)
+print("Precision:", prec)
+print("F1 Score:", f1)
+#print("Confusion Matrix:")
+#print(cm)
 print("Mean Squared Error:", mse)
+
+plt.plot(range(len(errors)), errors)
+plt.title('Error por iteración')
+plt.xlabel('Iteración')
+plt.ylabel('Error absoluto medio')
+plt.show()
+
 
 plt.figure(figsize=(8, 6))
 plt.imshow(cm, cmap='Blues', interpolation='nearest')

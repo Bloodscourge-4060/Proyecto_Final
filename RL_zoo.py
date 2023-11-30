@@ -30,17 +30,18 @@ def sigmoid(z):
 
 # Función para entrenar el modelo de regresión logística
 def train_logistic_regression(X, y, learning_rate=0.01, epochs=1000):
-    weights = np.zeros(X.shape[1])  # Inicializar pesos
+    weights = np.zeros(X.shape[1])
+    errors = []  
     for _ in range(epochs):
         z = np.dot(X, weights)
         predictions = sigmoid(z)
         error = y - predictions
         gradient = np.dot(X.T, error)
         weights += learning_rate * gradient
-    return weights
+        errors.append(np.mean(np.abs(error)))
+    return weights, errors
 
-# Entrenar el modelo
-weights = train_logistic_regression(X_train, y_train)
+weights, errors = train_logistic_regression(X_train, y_train)
 
 # Función para predecir usando los pesos aprendidos
 def predict(X, weights):
@@ -92,6 +93,12 @@ print("F1 Score:", f1)
 # print("Confusion Matrix:")
 # print(cm)
 print("Mean Squared Error:", mse)
+
+plt.plot(range(len(errors)), errors)
+plt.title('Error por iteración')
+plt.xlabel('Iteración')
+plt.ylabel('Error absoluto medio')
+plt.show()
 
 plt.figure(figsize=(8, 6))
 plt.imshow(cm, cmap='Blues', interpolation='nearest')

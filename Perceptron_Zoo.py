@@ -38,6 +38,7 @@ output_weights = np.random.uniform(size=(hidden_neurons, output_neurons))
 
 epochs = 1000
 learning_rate = 0.1
+errors = []
 
 for epoch in range(epochs):
     # Forward propagation
@@ -57,6 +58,9 @@ for epoch in range(epochs):
     # Actualización de pesos
     output_weights += hidden_layer_output.T.dot(d_predicted_output) * learning_rate
     hidden_weights += X_train.T.dot(d_hidden_layer) * learning_rate
+
+    error_epoch = np.mean(np.square(error))
+    errors.append(error_epoch)
 
 # Predicción en el conjunto de prueba
 hidden_layer_input_test = np.dot(X_test, hidden_weights)
@@ -112,6 +116,15 @@ print(f"Accuracy: {accuracy_value}")
 print(f"Recall: {recall_value}")
 print(f"F1 Score: {f1_value}")
 print(f"MSE: {mse_value}")
+
+plt.figure(figsize=(8, 6))
+plt.plot(range(epochs), errors, label='Error por época', color='blue')
+plt.title('Error durante el entrenamiento')
+plt.xlabel('Época')
+plt.ylabel('Error')
+plt.legend()
+plt.grid(True)
+plt.show()
 
 plt.figure(figsize=(8, 6))
 plt.imshow(conf_matrix, cmap='Blues', interpolation='nearest')
